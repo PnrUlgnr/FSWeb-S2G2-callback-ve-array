@@ -1,5 +1,5 @@
-const { fifaData } = require('./fifa.js')
-
+ const { fifaData } = require('./fifa.js')
+ //console.log(fifaData);
 
 /* Görev 1: 
 	Verilen datayı parçalayarak aşağıdaki verileri (console.log-ing) elde ederek pratik yapın. 
@@ -48,35 +48,70 @@ function Finaller(matches) {
 	3. Finaller data setindeki tüm yılları içeren "years" adındaki diziyi(array) döndürecek
 	*/
 
-function Yillar(dizi, Finaller) {
-	const result =[];
-	Finaller(dizi).forEach(element=>{
-		result.push(element.Year)
-	});
-    return result
+function Yillar (fifaData, Finaller) {
+	const years = Finaller(fifaData).map(match=>{
+return match["Year"]
+	})
+	return years;
 }
 console.log(Yillar(fifaData, Finaller));
 
 /*  Görev 4: 
-	Bir higher-order fonksiyonunu olan Kazananlar isimli fonksiyona aşağıdakileri uygulayın:  
+	Bir higher-order(başka bir fonksiyonu alan fonksiyonlar) fonksiyonunu olan Kazananlar isimli fonksiyona aşağıdakileri uygulayın:  
 	1. fifaData dizisini(array) fonksiyonunun birinci parametresi olarak alacak
 	2. Görev 2'de yazdığınız Finaller fonksiyonunu, geriçağırım(callback) olarak fonksiyonun ikinci parametresi olarak alacak
 	3. Her final maçının kazananını (evsahibi ya da deplasman) belirleyecek
 	💡 İPUCU: Beraberlikler(ties) için şimdilik endişelenmeyin (Detaylı bilgi için README dosyasına bakabilirsiniz.)
 	4. Tüm kazanan ülkelerin isimlerini içeren `kazananlar` adında bir dizi(array) döndürecek(return)  */ 
 
-function Kazananlar(dizi,callback) {
-	let kazananlar =callback(dizi).map(yil =>{
-		if (yil ["Home Team Goals"]> yil ["Away Team Goals"])
-		return yil ["Home Team Name"];
-	 else
-	 return yil ["Away Team Name"]
-	});
+function Kazananlar(fifaData, Finaller) {const kazananlar = Finaller(fifaData).reduce((acc, match) => {
+	if (match["Home Team Goals"] > match["Away Team Goals"]) {
+		acc.push(match["Home Team Name"])
+	}
+	else {
+		acc.push(match["Away Team Name"])
+	}
+	return acc;
+},[])
+return kazananlar;
+}
+console.log(Kazananlar(fifaData,Finaller));
+
+
+	//const kazananlar = Finaller(fifaData).map(match=>{
+	//	f (match["Home Team Goals"] > match["Away Team Goals"]){
+		//	return match ["Home Team Name"];
+	//	}
+	//	else {
+	//		return match}
+	//})
+//}
+	
+/*function Kazananlar(fifaData, Finaller) {
+	const kazananlar = Finaller(fifaData).reduce((acc, match) => {
+		if (match["Home Team Goals"] > match["Away Team Goals"]) {
+			acc.push(match["Home Team Name"])
+		}
+		else {
+			acc.push(match["Away Team Name"])
+		}
+		return acc;
+	},[])
 	return kazananlar;
+}
+console.log(Kazananlar(fifaData,Finaller));*/
+
+//let kazananlar =callback(dizi).map(yil =>{
+		//if (yil ["Home Team Goals"]> yil ["Away Team Goals"])
+		//return yil ["Home Team Name"];
+	 //else
+	 //return yil ["Away Team Name"]
+	//});
+	//return kazananlar;
     /* kodlar buraya */
 	
-}
-
+//}
+//console.log(Kazananlar(fifaData,Finaller));
 
 
 /*  Görev 5: 
@@ -90,12 +125,19 @@ function Kazananlar(dizi,callback) {
 	💡 İPUCU: her cümlenin adım 4'te belirtilen cümleyle birebir aynı olması gerekmektedir.
 */
 
-function YillaraGoreKazananlar(/* kodlar buraya */) {
-	
-/* kodlar buraya */
+function YillaraGoreKazananlar( fifaData,Finaller,Yillar,Kazananlar ) {
+	const yillar = Yillar(fifaData,Finaller);
+	const kazananlar = Kazananlar(fifaData,Finaller);
+	const result= [];
+
+	yillar.forEach((yil,index) => {
+		const metin = ` ${yil} yılında, ${kazananlar[index]} dünya kupasını kazandı!`
+		result.push(metin)
+	});
+	return result;
 
 }
-
+console.log(YillaraGoreKazananlar(fifaData,Finaller,Yillar,Kazananlar));
 
 /*  Görev 6: 
 	Bir higher order fonksiyonu olan `OrtalamaGolSayisi` isimli fonksiyona aşağıdakileri uygulayın: 
@@ -111,12 +153,12 @@ function YillaraGoreKazananlar(/* kodlar buraya */) {
 	
 */
 
-function OrtalamaGolSayisi(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-	
-}
-
+function OrtalamaGolSayisi(Finaller) {
+	let toplamGolSayisi= Finaller.reduce((toplamGol,mac)=>
+	toplamGol +mac["Home Team Goals"] + mac["Away Team Goals"],0);
+	return (toplamGolSayisi / Finaller.length).toFixed(2);
+	}
+//console.log ( OrtalamaGolSayisi(Finaller(fifaData)));
 
 
 /// EKSTRA ÇALIŞMALAR ///
@@ -127,8 +169,9 @@ function OrtalamaGolSayisi(/* kodlar buraya */) {
 	İpucu: "takım kısaltmaları" (team initials) için datada araştırma yapın!
 İpucu: `.reduce` Kullanın*/
 
-function UlkelerinKazanmaSayilari(/* kodlar buraya */) {
+function UlkelerinKazanmaSayilari() {
 	
+
     /* kodlar buraya */
 	
 }
